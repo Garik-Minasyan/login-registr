@@ -56,7 +56,7 @@ const Users = () => {
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    // event.preventDefault();
+    event.preventDefault();
     setErrors(validation(orderInfo));
     setErrorsFile(uploadFileValid(uploadFile));
     if (
@@ -72,6 +72,13 @@ const Users = () => {
       uploadFile
     ) {
       localStorage.setItem("orderList", JSON.stringify(listOrders));
+      setOrderInfo({
+        userName: "",
+        trackingCode: "",
+        price: "",
+        orderDescription: "",
+      });
+      setUploadFile("");
     }
   };
 

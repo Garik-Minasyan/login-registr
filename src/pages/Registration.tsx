@@ -24,16 +24,16 @@ const Registration = () => {
   const [role, setRole] = useState("admin");
   const [errors, setErrors] = useState<any>({});
 
-  let listRegUsera: any[] = [];
+  let listRegUsers: any[] = [];
   const { name, password, email, phone } = userInfo;
 
   if (localStorage.getItem("registeredUsersList")) {
-    listRegUsera = JSON.parse(
+    listRegUsers = JSON.parse(
       localStorage.getItem("registeredUsersList") || ""
     );
   }
 
-  listRegUsera.push({
+  listRegUsers.push({
     name: name,
     password: password,
     email: email,
@@ -42,9 +42,15 @@ const Registration = () => {
     id: new Date().getUTCMilliseconds(),
   });
 
+  // const isEmailExist = (userInfo.email, listRegUsers) => {
+  //   listRegUsers.some((user:any) => user.email === userInfo.email)
+
+  // }
+
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors(validation(userInfo));
+
     if (
       !errors.name &&
       name &&
@@ -58,7 +64,7 @@ const Registration = () => {
       role
     ) {
       navigate("/login");
-      localStorage.setItem("registeredUsersList", JSON.stringify(listRegUsera));
+      localStorage.setItem("registeredUsersList", JSON.stringify(listRegUsers));
     }
   };
 

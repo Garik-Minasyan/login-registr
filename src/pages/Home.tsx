@@ -49,7 +49,7 @@ const Home = () => {
   };
   return (
     <>
-      {!currentUser ? (
+      {!currentUser && !currentUsersList ? (
         <div>
           <HomeTextWrapper>
             To access this page, please register and then log in. Sincerely,

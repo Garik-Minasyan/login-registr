@@ -22,7 +22,16 @@ const Admins = () => {
     if (localStorage.getItem("orderList")) {
       setOrderLists(JSON.parse(localStorage.getItem("orderList") || ""));
     }
-  }, [orderLists]);
+  }, []);
+
+  const deleteOrder = (element: number | null | undefined) => {
+    const userExist = orderLists.filter(
+      (orderList: CurrentUser) => orderList.id !== element
+    );
+    if (userExist) {
+      localStorage.removeItem("orderList");
+    }
+  };
 
   return (
     <div>
@@ -30,7 +39,7 @@ const Admins = () => {
         orderLists?.map((orderList: CurrentUser) => {
           return (
             <OrderListWrappper key={orderList.id}>
-              <div>Name : {orderList.userName}</div>
+              <div>user name : {orderList.userName}</div>
               <div>Description : {orderList.orderDescription}</div>
               <div>Code : {orderList.trackingCode}</div>
               <div>Price : {orderList.price}</div>
@@ -41,7 +50,7 @@ const Admins = () => {
                   alt="png"
                 />
               </div>
-              <DeleteiconWrapper>
+              <DeleteiconWrapper onClick={() => deleteOrder(orderList.id)}>
                 <FaTrashAlt />
               </DeleteiconWrapper>
             </OrderListWrappper>

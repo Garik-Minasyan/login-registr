@@ -34,12 +34,18 @@ const Login = () => {
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors(validation(currentValues));
-    const userExist = currentUsers.some(
+    const userExist = currentUsers.filter(
       (currentUser: CurrentUser) =>
         currentUser.email !== currentValues.email &&
         currentUser.password !== currentValues.password
     );
-    if (userExist) {
+    if (
+      userExist &&
+      currentValues.email &&
+      currentValues.password &&
+      errors.email &&
+      errors.password
+    ) {
       navigate("/");
       localStorage.setItem("currentUser", JSON.stringify(currentValues.email));
     } else {
