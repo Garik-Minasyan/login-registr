@@ -23,6 +23,12 @@ export const TextWrapper = styled.p`
   font-family: ${globalFamily};
 `;
 
+export const HomeTextWrapper = styled.p`
+  color: ${globalColorRed};
+  font-size: 35px;
+  font-family: ${globalFamily};
+`;
+
 export const InputWrapper = styled.input`
   font-family: ${globalFamily};
   width: 350px;

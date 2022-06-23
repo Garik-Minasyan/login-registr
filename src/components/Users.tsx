@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { TextWrapperError } from "../pages/styles";
 import validation from "../validation";
+import { uploadFileValid } from "../validation";
 import {
   LoginWrapper,
   FormWrapper,
@@ -11,13 +12,12 @@ import {
 
 const Users = () => {
   interface OrderCategoriesProps {
-    data: Array<Type>;
-  }
-  interface Type {
     userName: string;
     trackingCode: string;
     price: string;
     orderDescription: string;
+    id: number;
+    uploadFile: any;
   }
   const [orderInfo, setOrderInfo] = useState({
     userName: "",
@@ -27,8 +27,23 @@ const Users = () => {
   });
   const [uploadFile, setUploadFile] = useState<any>("");
   const [errors, setErrors] = useState<any>("");
-  const orderList: OrderCategoriesProps[] = [];
+  const [errorsFile, setErrorsFile] = useState<any>("");
   const { userName, trackingCode, price, orderDescription } = orderInfo;
+
+  let listOrders: OrderCategoriesProps[] = [];
+
+  if (localStorage.getItem("orderList")) {
+    listOrders = JSON.parse(localStorage.getItem("orderList") || "");
+  }
+
+  listOrders.push({
+    userName: userName,
+    trackingCode: trackingCode,
+    price: price,
+    orderDescription: orderDescription,
+    uploadFile: uploadFile,
+    id: new Date().getUTCMilliseconds(),
+  });
 
   const imageHandler = (e: any) => {
     const reader = new FileReader();
@@ -41,30 +56,22 @@ const Users = () => {
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // event.preventDefault();
     setErrors(validation(orderInfo));
+    setErrorsFile(uploadFileValid(uploadFile));
     if (
-      !userName ||
-      !price ||
-      !trackingCode ||
-      !orderDescription ||
-      !uploadFile
+      !errors.userName &&
+      userName &&
+      !errors.trackingCode &&
+      trackingCode &&
+      !errors.price &&
+      price &&
+      !errors.orderDescription &&
+      orderDescription &&
+      !errorsFile &&
+      uploadFile
     ) {
-      console.log(" stex alert cuyc tal");
-    } else {
-      localStorage.setItem(
-        "orderList",
-        JSON.stringify([
-          ...orderList,
-          {
-            userName: userName,
-            trackingCode: trackingCode,
-            price: price,
-            orderDescription: orderDescription,
-            uploadFile: uploadFile,
-            id: new Date().getUTCMilliseconds(),
-          },
-        ])
-      );
+      localStorage.setItem("orderList", JSON.stringify(listOrders));
     }
   };
 
@@ -129,9 +136,7 @@ const Users = () => {
           name="image-upload"
           onChange={imageHandler}
         />
-        {errors.uploadFile && (
-          <TextWrapperError>{errors.uploadFile}</TextWrapperError>
-        )}
+        {errorsFile && <TextWrapperError>{errorsFile}</TextWrapperError>}
 
         <ButtonWrapper>Add</ButtonWrapper>
       </FormWrapper>

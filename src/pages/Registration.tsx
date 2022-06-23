@@ -13,17 +13,6 @@ import {
   TextWrapperError,
 } from "./styles";
 
-interface RegisteredUsersList {
-  data: Array<Type>;
-}
-interface Type {
-  name: string;
-  password: string;
-  email: string;
-  phone: string;
-  role: string;
-}
-
 const Registration = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
@@ -35,14 +24,16 @@ const Registration = () => {
   const [role, setRole] = useState("admin");
   const [errors, setErrors] = useState<any>({});
 
-  let arr: any[] = [];
+  let listRegUsera: any[] = [];
   const { name, password, email, phone } = userInfo;
 
   if (localStorage.getItem("registeredUsersList")) {
-    arr = JSON.parse(localStorage.getItem("registeredUsersList") || "");
+    listRegUsera = JSON.parse(
+      localStorage.getItem("registeredUsersList") || ""
+    );
   }
 
-  arr.push({
+  listRegUsera.push({
     name: name,
     password: password,
     email: email,
@@ -67,7 +58,7 @@ const Registration = () => {
       role
     ) {
       navigate("/login");
-      localStorage.setItem("registeredUsersList", JSON.stringify(arr));
+      localStorage.setItem("registeredUsersList", JSON.stringify(listRegUsera));
     }
   };
 
@@ -83,7 +74,12 @@ const Registration = () => {
     <LoginWrapper>
       <img style={{ width: "700px" }} src={personeImg} alt="png" />
       <FormWrapper onSubmit={handleFormSubmit}>
-        <TextWrapper>Registeration</TextWrapper>
+        <TextWrapper>
+          Registeration
+          <ButtonWrapper onClick={() => navigate("/login")}>
+            Go Login ?
+          </ButtonWrapper>
+        </TextWrapper>
         <InputWrapper
           type="text"
           placeholder="name"

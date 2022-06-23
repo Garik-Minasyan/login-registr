@@ -34,19 +34,17 @@ const Login = () => {
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors(validation(currentValues));
-
-    currentUsers.filter((currentUser: CurrentUser) => {
-      if (
-        currentUser.email === currentValues.email &&
-        currentUser.password === currentValues.password
-      ) {
-        navigate("/");
-        localStorage.setItem(
-          "currentUser",
-          JSON.stringify(currentValues.email)
-        );
-      }
-    });
+    const userExist = currentUsers.some(
+      (currentUser: CurrentUser) =>
+        currentUser.email !== currentValues.email &&
+        currentUser.password !== currentValues.password
+    );
+    if (userExist) {
+      navigate("/");
+      localStorage.setItem("currentUser", JSON.stringify(currentValues.email));
+    } else {
+      alert("No users found, please register or wrong email or password");
+    }
   };
 
   const handleChnage = (event: React.ChangeEvent<HTMLInputElement>) => {

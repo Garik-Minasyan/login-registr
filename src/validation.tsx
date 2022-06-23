@@ -11,6 +11,14 @@ interface ErrorsCategoriesProps {
   uploadFile: string;
 }
 
+export const uploadFileValid = (uploadFile: string) => {
+  let error: string = "";
+  if (!uploadFile) {
+    error = "upload File is required";
+  }
+  return error;
+};
+
 const validation = (values: any) => {
   let errors: ErrorsCategoriesProps = {
     name: "",
@@ -33,9 +41,11 @@ const validation = (values: any) => {
 
   if (!values.password) {
     errors.password = "password is required";
-  } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(values.password)) {
+  } else if (
+    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(values.password)
+  ) {
     errors.password =
-      "Minimum 8 characters, at least 1 uppercase 1 lowercase letter,1 number and 1 special character";
+      "Minimum 8 characters, at least 1 uppercase & 1 lowercase letter and 1 number";
   }
 
   if (!values.name) {
@@ -51,15 +61,15 @@ const validation = (values: any) => {
   }
 
   if (!values.userName) {
-    errors.userName = "userName is required";
+    errors.userName = "user Name is required";
   } else if (values.userName.length > 10) {
     errors.userName = "user Name must be more than 10 characters";
   }
 
   if (!values.trackingCode) {
     errors.trackingCode = "tracking Code is required";
-  } else if (values.trackingCode.length < 8) {
-    errors.trackingCode = "tracking Code must be more than 8 characters";
+  } else if (values.trackingCode.length < 5) {
+    errors.trackingCode = "tracking Code must be more than 5 characters";
   }
 
   if (!values.price) {
@@ -74,11 +84,6 @@ const validation = (values: any) => {
     errors.orderDescription =
       "order Description must be more than 20 characters";
   }
-
-  if (!values.uploadFile) {
-    errors.uploadFile = "upload File is required";
-  }
-
   return errors;
 };
 
