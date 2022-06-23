@@ -23,10 +23,14 @@ const Login = () => {
     email: "",
     password: "",
   });
+  let currentUsers: any[] = [];
 
-  const currentUsers = JSON.parse(
-    localStorage.getItem("registeredUsersList") || ""
-  );
+  if (localStorage.getItem("registeredUsersList")) {
+    currentUsers = JSON.parse(
+      localStorage.getItem("registeredUsersList") || ""
+    );
+  }
+
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors(validation(currentValues));
@@ -40,10 +44,6 @@ const Login = () => {
         localStorage.setItem(
           "currentUser",
           JSON.stringify(currentValues.email)
-        );
-      } else {
-        alert(
-          "No users found Please register to log in ...! Wrong email or password "
         );
       }
     });

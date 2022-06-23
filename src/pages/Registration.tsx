@@ -35,18 +35,23 @@ const Registration = () => {
   const [role, setRole] = useState("admin");
   const [errors, setErrors] = useState<any>({});
 
-  let registeredUsersList: any[] = [];
+  let arr: any[] = [];
   const { name, password, email, phone } = userInfo;
 
+  if (localStorage.getItem("registeredUsersList")) {
+    arr = JSON.parse(localStorage.getItem("registeredUsersList") || "");
+  }
+
+  arr.push({
+    name: name,
+    password: password,
+    email: email,
+    phone: phone,
+    role: role,
+    id: new Date().getUTCMilliseconds(),
+  });
+
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    registeredUsersList.push({
-      name: name,
-      password: password,
-      email: email,
-      phone: phone,
-      role: role,
-      id: new Date().getUTCMilliseconds(),
-    });
     event.preventDefault();
     setErrors(validation(userInfo));
     if (
@@ -62,20 +67,7 @@ const Registration = () => {
       role
     ) {
       navigate("/login");
-      localStorage.setItem(
-        "registeredUsersList",
-        JSON.stringify([
-          ...registeredUsersList,
-          {
-            name: name,
-            password: password,
-            email: email,
-            phone: phone,
-            role: role,
-            id: new Date().getUTCMilliseconds(),
-          },
-        ])
-      );
+      localStorage.setItem("registeredUsersList", JSON.stringify(arr));
     }
   };
 

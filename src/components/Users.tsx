@@ -34,9 +34,7 @@ const Users = () => {
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
-        setUploadFile({
-          uploadFile: reader.result,
-        });
+        setUploadFile(reader.result);
       }
     };
     reader.readAsDataURL(e.target.files[0]);
@@ -49,7 +47,7 @@ const Users = () => {
       !price ||
       !trackingCode ||
       !orderDescription ||
-      !uploadFile.uploadFile
+      !uploadFile
     ) {
       console.log(" stex alert cuyc tal");
     } else {
@@ -62,7 +60,7 @@ const Users = () => {
             trackingCode: trackingCode,
             price: price,
             orderDescription: orderDescription,
-            uploadFile: uploadFile.uploadFile,
+            uploadFile: uploadFile,
             id: new Date().getUTCMilliseconds(),
           },
         ])
@@ -122,7 +120,7 @@ const Users = () => {
 
         <img
           style={{ width: "100px", marginTop: "10px", marginBottom: "10px" }}
-          src={uploadFile.uploadFile}
+          src={uploadFile}
           alt=""
         />
         <input
@@ -131,8 +129,8 @@ const Users = () => {
           name="image-upload"
           onChange={imageHandler}
         />
-        {errors.uploadFile.uploadFile && (
-          <TextWrapperError>{errors.uploadFile.uploadFile}</TextWrapperError>
+        {errors.uploadFile && (
+          <TextWrapperError>{errors.uploadFile}</TextWrapperError>
         )}
 
         <ButtonWrapper>Add</ButtonWrapper>

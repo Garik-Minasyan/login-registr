@@ -28,6 +28,9 @@ export const InputWrapper = styled.input`
   width: 350px;
   height: 40px;
   margin-top: 8px;
+  &::placeholder {
+    color: #e1e3e3;
+  }
 `;
 export const InputRadioWrapper = styled.input`
   color: ${globalColor};
