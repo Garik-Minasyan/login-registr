@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { globalColor, globalFamily } from "../globalStyles";
+import { globalColor, globalColorRed, globalFamily } from "../globalStyles";
 
 export const LoginWrapper = styled.div`
   display: flex;
@@ -34,7 +34,7 @@ export const InputRadioWrapper = styled.input`
   font-family: ${globalFamily};
 `;
 export const LabelWrapper = styled.label`
-  color: #5dba2f;
+  color: ${globalColor};
   font-family: ${globalFamily};
   margin-left: 40px;
 `;
@@ -81,9 +81,10 @@ export const LogOutWrapper = styled.button`
 `;
 
 export const TextWrapperError = styled.p`
-  color: red;
+  color: ${globalColorRed};
   font-size: 16px;
-  margin: 0;
+  margin-bottom: 5px;
   padding: 0;
   font-family: ${globalFamily};
+  width: 355px;
 `;

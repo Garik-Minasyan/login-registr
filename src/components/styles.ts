@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { globalColor, globalFamily } from "../globalStyles";
+import { globalColor, globalFamily, globalColorRed } from "../globalStyles";
 
 export const LoginWrapper = styled.div`
   display: flex;
@@ -22,6 +22,11 @@ export const TextWrapper = styled.p`
   font-size: 35px;
   font-family: ${globalFamily};
 `;
+export const NoOrdersWrapper = styled.p`
+  color: ${globalColorRed};
+  font-size: 35px;
+  font-family: ${globalFamily};
+`;
 
 export const InputWrapper = styled.input`
   font-family: ${globalFamily};
@@ -34,7 +39,7 @@ export const InputRadioWrapper = styled.input`
   font-family: ${globalFamily};
 `;
 export const LabelWrapper = styled.label`
-  color: #5dba2f;
+  color: ${globalColor};
   font-family: ${globalFamily};
   margin-left: 40px;
 `;
@@ -89,7 +94,7 @@ export const OrderListWrappper = styled.div`
 `;
 
 export const DeleteiconWrapper = styled.button`
-  color: red;
+  color: ${globalColorRed};
   font-family: ${globalFamily};
   height: 40px;
   width: 150px;

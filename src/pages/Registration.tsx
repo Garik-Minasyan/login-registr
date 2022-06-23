@@ -35,12 +35,32 @@ const Registration = () => {
   const [role, setRole] = useState("admin");
   const [errors, setErrors] = useState<any>({});
 
-  let registeredUsersList: RegisteredUsersList[] = [];
+  let registeredUsersList: any[] = [];
   const { name, password, email, phone } = userInfo;
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    registeredUsersList.push({
+      name: name,
+      password: password,
+      email: email,
+      phone: phone,
+      role: role,
+      id: new Date().getUTCMilliseconds(),
+    });
     event.preventDefault();
-    if (name && email && password && phone && role) {
+    setErrors(validation(userInfo));
+    if (
+      !errors.name &&
+      name &&
+      !errors.email &&
+      email &&
+      !errors.password &&
+      password &&
+      !errors.phone &&
+      phone &&
+      !errors.role &&
+      role
+    ) {
       navigate("/login");
       localStorage.setItem(
         "registeredUsersList",
@@ -52,12 +72,10 @@ const Registration = () => {
             email: email,
             phone: phone,
             role: role,
-            // id: new Date().getUTCMilliseconds(),
+            id: new Date().getUTCMilliseconds(),
           },
         ])
       );
-    } else {
-      setErrors(validation(userInfo));
     }
   };
 
@@ -113,7 +131,6 @@ const Registration = () => {
           <LabelWrapper>Admin</LabelWrapper>
           <InputRadioWrapper
             type="radio"
-            id="contactChoice1"
             value={role}
             name="admin"
             onChange={(e) => handleChackRadio(e)}
@@ -123,7 +140,6 @@ const Registration = () => {
           <LabelWrapper>User</LabelWrapper>
           <InputRadioWrapper
             type="radio"
-            id="contactChoice1"
             value={role}
             name="user"
             onChange={(e) => handleChackRadio(e)}

@@ -1,5 +1,10 @@
-import { OrderListWrappper, DeleteiconWrapper } from "./styles";
+import {
+  OrderListWrappper,
+  DeleteiconWrapper,
+  NoOrdersWrapper,
+} from "./styles";
 import { FaTrashAlt } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 interface CurrentUser {
   id: null | undefined;
@@ -11,11 +16,17 @@ interface CurrentUser {
 }
 
 const Admins = () => {
-  const orderLists = JSON.parse(localStorage.getItem("orderList") || "");
+  const [orderLists, setOrderLists] = useState([]);
+
+  useEffect(() => {
+    if (localStorage.getItem("orderList")) {
+      setOrderLists(JSON.parse(localStorage.getItem("orderList") || ""));
+    }
+  }, [orderLists]);
 
   return (
     <div>
-      {orderLists &&
+      {orderLists.length > 0 ? (
         orderLists?.map((orderList: CurrentUser) => {
           return (
             <OrderListWrappper key={orderList.id}>
@@ -35,7 +46,10 @@ const Admins = () => {
               </DeleteiconWrapper>
             </OrderListWrappper>
           );
-        })}
+        })
+      ) : (
+        <NoOrdersWrapper>No Orders</NoOrdersWrapper>
+      )}
     </div>
   );
 };

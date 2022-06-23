@@ -24,12 +24,13 @@ const Login = () => {
     password: "",
   });
 
+  const currentUsers = JSON.parse(
+    localStorage.getItem("registeredUsersList") || ""
+  );
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors(validation(currentValues));
-    const currentUsers = JSON.parse(
-      localStorage.getItem("registeredUsersList") || ""
-    );
+
     currentUsers.filter((currentUser: CurrentUser) => {
       if (
         currentUser.email === currentValues.email &&
@@ -39,6 +40,10 @@ const Login = () => {
         localStorage.setItem(
           "currentUser",
           JSON.stringify(currentValues.email)
+        );
+      } else {
+        alert(
+          "No users found Please register to log in ...! Wrong email or password "
         );
       }
     });
@@ -70,6 +75,7 @@ const Login = () => {
           placeholder="Enter password"
           onChange={handleChnage}
           name="password"
+          autoComplete="current-password"
           value={currentValues.password}
         />
         {errors.password && (
