@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import validation from "../validation";
-import personeImg from "./../assets/images/personage.png";
+import validation from "../../validation";
+import personeImg from "../../assets/images/personage.png";
+import { ErrorsCategoriesProps, UserType } from "../../types";
 import {
-  LoginWrapper,
+  RegistrWrapper,
   FormWrapper,
   TextWrapper,
   InputWrapper,
@@ -11,6 +12,8 @@ import {
   InputRadioWrapper,
   LabelWrapper,
   TextWrapperError,
+  LoginImage,
+  InputRadioLabelWrapper,
 } from "./styles";
 
 const Registration = () => {
@@ -22,49 +25,57 @@ const Registration = () => {
     phone: "",
   });
   const [role, setRole] = useState("admin");
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<ErrorsCategoriesProps>({});
+  const [listRegUsers, setListRegUsers] = useState<UserType[]>([]);
 
-  let listRegUsers: any[] = [];
   const { name, password, email, phone } = userInfo;
 
-  if (localStorage.getItem("registeredUsersList")) {
-    listRegUsers = JSON.parse(
-      localStorage.getItem("registeredUsersList") || ""
+  useEffect(() => {
+    const registeredUsers: string | null = localStorage.getItem(
+      "registeredUsersList"
     );
-  }
+    if (registeredUsers) {
+      setListRegUsers(JSON.parse(registeredUsers));
+    }
+  }, []);
 
-  listRegUsers.push({
-    name: name,
-    password: password,
-    email: email,
-    phone: phone,
-    role: role,
-    id: new Date().getUTCMilliseconds(),
-  });
-
-  // const isEmailExist = (userInfo.email, listRegUsers) => {
-  //   listRegUsers.some((user:any) => user.email === userInfo.email)
-
-  // }
+  const isEmailExist = listRegUsers.some(
+    (user: UserType) => user.email === userInfo.email
+  );
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setErrors(validation(userInfo));
+    if (isEmailExist) {
+      alert("email allredy used");
+    } else {
+      setErrors(validation(userInfo));
+      listRegUsers.push({
+        name: name,
+        password: password,
+        email: email,
+        phone: phone,
+        role: role,
+        id: new Date().getUTCMilliseconds(),
+      });
 
-    if (
-      !errors.name &&
-      name &&
-      !errors.email &&
-      email &&
-      !errors.password &&
-      password &&
-      !errors.phone &&
-      phone &&
-      !errors.role &&
-      role
-    ) {
-      navigate("/login");
-      localStorage.setItem("registeredUsersList", JSON.stringify(listRegUsers));
+      if (
+        !errors.name &&
+        name &&
+        !errors.email &&
+        email &&
+        !errors.password &&
+        password &&
+        !errors.phone &&
+        phone &&
+        !errors.role &&
+        role
+      ) {
+        localStorage.setItem(
+          "registeredUsersList",
+          JSON.stringify(listRegUsers)
+        );
+        navigate("/login");
+      }
     }
   };
 
@@ -77,8 +88,8 @@ const Registration = () => {
   };
 
   return (
-    <LoginWrapper>
-      <img style={{ width: "700px" }} src={personeImg} alt="png" />
+    <RegistrWrapper>
+      <LoginImage src={personeImg} alt="png" />
       <FormWrapper onSubmit={handleFormSubmit}>
         <TextWrapper>
           Registeration
@@ -121,7 +132,7 @@ const Registration = () => {
           onChange={(e) => onInputChange(e)}
         />
         {errors.phone && <TextWrapperError>{errors.phone}</TextWrapperError>}
-        <div>
+        <InputRadioLabelWrapper>
           <LabelWrapper>Admin</LabelWrapper>
           <InputRadioWrapper
             type="radio"
@@ -130,7 +141,6 @@ const Registration = () => {
             onChange={(e) => handleChackRadio(e)}
             checked={role === "admin"}
           />
-
           <LabelWrapper>User</LabelWrapper>
           <InputRadioWrapper
             type="radio"
@@ -140,9 +150,9 @@ const Registration = () => {
             checked={role === "user"}
           />
           <ButtonWrapper type="submit">Register</ButtonWrapper>
-        </div>
+        </InputRadioLabelWrapper>
       </FormWrapper>
-    </LoginWrapper>
+    </RegistrWrapper>
   );
 };
 

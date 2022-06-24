@@ -1,6 +1,6 @@
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Registration from "./pages/Registration";
+import Home from "./pages/Home/Home";
+import Login from "./pages/login/Login";
+import Registration from "./pages/register/Registration";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 
 const App = () => {

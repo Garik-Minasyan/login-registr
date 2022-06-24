@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Admins from "../components/Admins";
-import Users from "../components/Users";
-import onexLogo from "../assets/images/onex-logo.svg";
+import Admins from "../../components/admins/Admins";
+import Users from "../../components/users/Users";
+import onexLogo from "../../assets/images/onex-logo.svg";
 import {
   HomeHeaderWrapper,
   HomeWrapper,
@@ -11,37 +12,33 @@ import {
   TextWrapper,
   HomeTextWrapper,
 } from "./styles";
-
-interface CurrentUser {
-  email: string;
-}
+import { UserType, CurrentUser } from "../../types";
 
 const Home = () => {
   const navigate = useNavigate();
-  let currentUsersList;
-  let currentUserEmail: string;
-  let currentUser;
+  const [currentUserEmail, setCuurentUserEmail] = useState<string>("");
+  const [currentUsersList, setCurrentUsersList] = useState<UserType[]>([]);
 
-  try {
-    if (localStorage.getItem("currentUser")) {
-      currentUserEmail = JSON.parse(localStorage.getItem("currentUser") || "");
+  useEffect(() => {
+    const currentUserEmailFromLocalSt: string | null =
+      localStorage.getItem("currentUser");
+    if (currentUserEmailFromLocalSt) {
+      setCuurentUserEmail(JSON.parse(currentUserEmailFromLocalSt));
     }
-  } catch (error) {
-    console.log(error, "Not a current user");
-  }
+  }, []);
 
-  try {
-    if (localStorage.getItem("registeredUsersList")) {
-      currentUsersList = JSON.parse(
-        localStorage.getItem("registeredUsersList") || ""
-      );
-      currentUser = currentUsersList?.filter(
-        (elem: CurrentUser) => elem.email === currentUserEmail
-      );
+  useEffect(() => {
+    const currentUserListFromLocalSt: string | null = localStorage.getItem(
+      "registeredUsersList"
+    );
+    if (currentUserListFromLocalSt) {
+      setCurrentUsersList(JSON.parse(currentUserListFromLocalSt));
     }
-  } catch (error) {
-    console.log(error, "Not a registered user");
-  }
+  }, []);
+
+  const currentUser = currentUsersList?.filter(
+    (elem: CurrentUser) => elem.email === currentUserEmail
+  );
 
   const handleLogOut = () => {
     localStorage.removeItem("currentUser");
@@ -49,7 +46,7 @@ const Home = () => {
   };
   return (
     <>
-      {!currentUser && !currentUsersList ? (
+      {!currentUser.length || !currentUsersList.length ? (
         <div>
           <HomeTextWrapper>
             To access this page, please register and then log in. Sincerely,
@@ -69,8 +66,9 @@ const Home = () => {
               <img style={{ width: "100px" }} src={onexLogo} alt="svg" />
             </div>
             <AvatarWrapper>
-              {currentUser && currentUser[0]?.role} :
-              {currentUser && currentUser[0]?.name}
+              {`${currentUser && currentUser[0]?.role}: ${
+                currentUser && currentUser[0]?.name
+              }`}
             </AvatarWrapper>
             <LogOutWrapper onClick={handleLogOut}>Log Out</LogOutWrapper>
           </HomeHeaderWrapper>

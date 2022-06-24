@@ -1,15 +1,4 @@
-interface ErrorsCategoriesProps {
-  name: string;
-  password: string;
-  email: string;
-  phone: string;
-  role: string;
-  userName: string;
-  trackingCode: string;
-  price: string;
-  orderDescription: string;
-  uploadFile: string;
-}
+import { ErrorsCategoriesProps } from "./types";
 
 export const uploadFileValid = (uploadFile: string) => {
   let error: string = "";

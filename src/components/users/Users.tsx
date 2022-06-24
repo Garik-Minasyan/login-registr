@@ -1,72 +1,67 @@
-import { useState } from "react";
-import { TextWrapperError } from "../pages/styles";
-import validation from "../validation";
-import { uploadFileValid } from "../validation";
+import { useEffect, useState } from "react";
+import { TextWrapperError } from "../../pages/register/styles";
+import validation from "../../validation";
+import { OrderCategoriesProps, ErrorsCategoriesProps } from "../../types";
+import { uploadFileValid } from "../../validation";
 import {
   LoginWrapper,
   FormWrapper,
   TextWrapper,
   InputWrapper,
   ButtonWrapper,
+  UploadImage,
 } from "./styles";
 
 const Users = () => {
-  interface OrderCategoriesProps {
-    userName: string;
-    trackingCode: string;
-    price: string;
-    orderDescription: string;
-    id: number;
-    uploadFile: any;
-  }
   const [orderInfo, setOrderInfo] = useState({
     userName: "",
     trackingCode: "",
     price: "",
     orderDescription: "",
   });
-  const [uploadFile, setUploadFile] = useState<any>("");
-  const [errors, setErrors] = useState<any>("");
-  const [errorsFile, setErrorsFile] = useState<any>("");
+  const [uploadFile, setUploadFile] = useState<string>("");
+  const [errors, setErrors] = useState<ErrorsCategoriesProps>({});
+  const [errorsFile, setErrorsFile] = useState<string>("");
+  const [listOrders, setListOrders] = useState<OrderCategoriesProps[]>([]);
   const { userName, trackingCode, price, orderDescription } = orderInfo;
 
-  let listOrders: OrderCategoriesProps[] = [];
+  useEffect(() => {
+    const orderListFromStorage: string | null =
+      localStorage.getItem("orderList");
+    if (orderListFromStorage) {
+      setListOrders(JSON.parse(orderListFromStorage));
+    }
+  }, []);
 
-  if (localStorage.getItem("orderList")) {
-    listOrders = JSON.parse(localStorage.getItem("orderList") || "");
-  }
-
-  listOrders.push({
-    userName: userName,
-    trackingCode: trackingCode,
-    price: price,
-    orderDescription: orderDescription,
-    uploadFile: uploadFile,
-    id: new Date().getUTCMilliseconds(),
-  });
-
-  const imageHandler = (e: any) => {
+  const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader();
     reader.onload = () => {
-      if (reader.readyState === 2) {
+      if (typeof reader.result === "string" && reader.readyState === 2) {
         setUploadFile(reader.result);
       }
     };
-    reader.readAsDataURL(e.target.files[0]);
+    e?.target?.files?.[0] && reader.readAsDataURL(e.target.files[0]);
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors(validation(orderInfo));
-    setErrorsFile(uploadFileValid(uploadFile));
+    listOrders.push({
+      userName: userName,
+      trackingCode: trackingCode,
+      price: price,
+      orderDescription: orderDescription,
+      uploadFile: uploadFile,
+      id: new Date().getUTCMilliseconds(),
+    });
+    typeof uploadFile === "string" &&
+      setErrorsFile(uploadFileValid(uploadFile));
+    const hasError = Object.keys(errors).some((error) => error in errors);
     if (
-      !errors.userName &&
+      !hasError &&
       userName &&
-      !errors.trackingCode &&
       trackingCode &&
-      !errors.price &&
       price &&
-      !errors.orderDescription &&
       orderDescription &&
       !errorsFile &&
       uploadFile
@@ -100,7 +95,6 @@ const Users = () => {
         {errors.userName && (
           <TextWrapperError>{errors.userName}</TextWrapperError>
         )}
-
         <InputWrapper
           type="text"
           value={trackingCode}
@@ -111,7 +105,6 @@ const Users = () => {
         {errors.trackingCode && (
           <TextWrapperError>{errors.trackingCode}</TextWrapperError>
         )}
-
         <InputWrapper
           value={price}
           type="number"
@@ -120,7 +113,6 @@ const Users = () => {
           onChange={(e) => onInputChange(e)}
         />
         {errors.price && <TextWrapperError>{errors.price}</TextWrapperError>}
-
         <InputWrapper
           value={orderDescription}
           type="text"
@@ -131,12 +123,7 @@ const Users = () => {
         {errors.orderDescription && (
           <TextWrapperError>{errors.orderDescription}</TextWrapperError>
         )}
-
-        <img
-          style={{ width: "100px", marginTop: "10px", marginBottom: "10px" }}
-          src={uploadFile}
-          alt=""
-        />
+        <UploadImage src={uploadFile} alt="" />
         <input
           type="file"
           accept="image/*"
@@ -144,7 +131,6 @@ const Users = () => {
           onChange={imageHandler}
         />
         {errorsFile && <TextWrapperError>{errorsFile}</TextWrapperError>}
-
         <ButtonWrapper>Add</ButtonWrapper>
       </FormWrapper>
     </LoginWrapper>

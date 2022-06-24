@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import validation from "../validation";
-import loginImage from "../assets/images/register.svg";
+import validation from "../../validation";
+import loginImage from "../../assets/images/register.svg";
+import { CurrentUserEmailPassword, ErrorsCategoriesProps } from "../../types";
 import {
   LoginWrapper,
   FormWrapper,
@@ -9,45 +10,38 @@ import {
   InputWrapper,
   ButtonWrapper,
   TextWrapperError,
+  LoginImage,
 } from "./styles";
-
-interface CurrentUser {
-  email: string;
-  password: string;
-}
 
 const Login = () => {
   const navigate = useNavigate();
-  const [errors, setErrors] = useState<any>({});
-  const [currentValues, setCurrentValues] = useState<CurrentUser>({
+  const [errors, setErrors] = useState<ErrorsCategoriesProps>({});
+  const [currentUsers, setCurrentUsers] = useState([]);
+  const [currentValues, setCurrentValues] = useState<CurrentUserEmailPassword>({
     email: "",
     password: "",
   });
-  let currentUsers: any[] = [];
 
-  if (localStorage.getItem("registeredUsersList")) {
-    currentUsers = JSON.parse(
-      localStorage.getItem("registeredUsersList") || ""
+  useEffect(() => {
+    const usersFromStorage: string | null = localStorage.getItem(
+      "registeredUsersList"
     );
-  }
+    if (usersFromStorage) {
+      setCurrentUsers(JSON.parse(usersFromStorage));
+    }
+  }, []);
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors(validation(currentValues));
-    const userExist = currentUsers.filter(
-      (currentUser: CurrentUser) =>
-        currentUser.email !== currentValues.email &&
-        currentUser.password !== currentValues.password
+    const userExist = currentUsers.some(
+      (currentUser: CurrentUserEmailPassword) =>
+        currentUser.email === currentValues.email &&
+        currentUser.password === currentValues.password
     );
-    if (
-      userExist &&
-      currentValues.email &&
-      currentValues.password &&
-      errors.email &&
-      errors.password
-    ) {
-      navigate("/");
+    if (userExist) {
       localStorage.setItem("currentUser", JSON.stringify(currentValues.email));
+      navigate("/");
     } else {
       alert("No users found, please register or wrong email or password");
     }
@@ -62,7 +56,7 @@ const Login = () => {
 
   return (
     <LoginWrapper>
-      <img style={{ width: "700px" }} src={loginImage} alt="jpg" />
+      <LoginImage src={loginImage} alt="jpg" />
       <FormWrapper onSubmit={handleLogin}>
         <TextWrapper>LogIn</TextWrapper>
         <InputWrapper
@@ -73,7 +67,6 @@ const Login = () => {
           value={currentValues.email}
         />
         {errors.email && <TextWrapperError>{errors.email}</TextWrapperError>}
-
         <InputWrapper
           type="password"
           placeholder="Enter password"
