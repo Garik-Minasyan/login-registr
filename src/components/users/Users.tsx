@@ -46,19 +46,20 @@ const Users = () => {
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors(validation(orderInfo));
-    listOrders.push({
-      userName: userName,
-      trackingCode: trackingCode,
-      price: price,
-      orderDescription: orderDescription,
-      uploadFile: uploadFile,
-      id: new Date().getUTCMilliseconds(),
-    });
+    setListOrders((prev) => [
+      ...prev,
+      {
+        userName: userName,
+        trackingCode: trackingCode,
+        price: price,
+        orderDescription: orderDescription,
+        uploadFile: uploadFile,
+        id: new Date().getUTCMilliseconds(),
+      },
+    ]);
     typeof uploadFile === "string" &&
       setErrorsFile(uploadFileValid(uploadFile));
-    const hasError = Object.keys(errors).some((error) => error in errors);
     if (
-      !hasError &&
       userName &&
       trackingCode &&
       price &&
@@ -66,7 +67,20 @@ const Users = () => {
       !errorsFile &&
       uploadFile
     ) {
-      localStorage.setItem("orderList", JSON.stringify(listOrders));
+      localStorage.setItem(
+        "orderList",
+        JSON.stringify([
+          ...listOrders,
+          {
+            userName: userName,
+            trackingCode: trackingCode,
+            price: price,
+            orderDescription: orderDescription,
+            uploadFile: uploadFile,
+            id: new Date().getUTCMilliseconds(),
+          },
+        ])
+      );
       setOrderInfo({
         userName: "",
         trackingCode: "",
